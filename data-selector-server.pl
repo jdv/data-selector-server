@@ -59,7 +59,8 @@ sub init {
     $stash->{$_} ||= $req->parameters->{$_} || ''
       for qw( selector json_text req_url req_body );
 
-    $stash->{req_do} ||= $req->parameters->{req_do} || 'checked';
+    $stash->{req_do} = keys %{ $req->parameters }
+      ? $req->parameters->{req_do} : 'checked';
 
     $stash->{req_method} ||= $req->parameters->{req_method} || 'GET';
 
