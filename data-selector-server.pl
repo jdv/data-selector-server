@@ -5,6 +5,7 @@
 use lib '.';
 
 use Data::Selector;
+use Digest::SHA ();
 use File::Temp ();
 use JSON::XS ();
 use LWP::UserAgent;
@@ -74,6 +75,17 @@ sub init {
     return;
 }
 
+sub _gen_rover_auth_headers {
+    my ( $self, ) = @_;
+    my $now = time;
+    my ( $id, $secret, ) = @{ $self->config }{qw(rover_id rover_secret)};
+    return $id && $secret ? (
+        Authorization => "Doorman-SHA256 Credential=$id",
+        Timestamp => $now,
+        Signature => Digest::SHA::sha256_hex($id, $secret, $now),
+    ) : ();
+}
+
 =item request
 
 Do request.
@@ -93,9 +105,10 @@ sub request {
         $req->content_type( 'application/json; charset=utf-8', );
     }
     my $before = Time::HiRes::time;
-    my $res = LWP::UserAgent->new( default_header => {
+    my $res = LWP::UserAgent->new( default_headers => HTTP::Headers->new(
         Accept => 'application/json; charset=utf-8',
-    }, )->request( $req );
+        $self->_gen_rover_auth_headers,
+    ), )->request( $req );
     my $req_time = sprintf('%.2fs', Time::HiRes::time - $before);
     my $len = Number::Bytes::Human::format_bytes(length($res->content)) || 0;
 
