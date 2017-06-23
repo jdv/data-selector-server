@@ -80,7 +80,7 @@ sub _gen_rover_auth_headers {
     my ( $self, ) = @_;
     my $now = time;
     my ( $id, $secret, ) = @{ $self->config }{qw(rover_id rover_secret)};
-    return $id && $secret ? (
+    return $id && $secret && $self->stash->{req_url} =~ /rover/ ? (
         Authorization => "Doorman-SHA256 Credential=$id",
         Timestamp => $now,
         Signature => Digest::SHA::sha256_hex($id, $secret, $now),
