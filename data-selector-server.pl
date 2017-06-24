@@ -1,9 +1,5 @@
 #!/usr/bin/env perl
 
-#TODO: check validity of fix, write tests, publish
-#See https://github.com/jdv/data-selector/issues/1
-use lib '.';
-
 use Data::Selector;
 use Digest::SHA ();
 use File::Temp ();
