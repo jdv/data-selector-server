@@ -209,6 +209,7 @@ sub render {
     $stash->{html} = <<"HTML";
         <html>
             <head>
+	    	<meta charset="utf-8"/>
                 <title>@{[ref $self]}</title>
             </head>
             <body>
