@@ -52,7 +52,7 @@ sub init {
         $stash = JSON::XS::decode_json( $json );
     }
 
-    $stash->{$_} ||= $req->parameters->{$_} || ''
+    $stash->{$_} //= $req->parameters->{$_} // ''
       for qw( selector json_text req_url req_body );
 
     $stash->{req_do} = keys %{ $req->parameters }
@@ -152,7 +152,7 @@ sub produce {
             selector_string => $stash->{selector},
         } ),
         data_tree => $stash->{data},
-    } ) if $stash->{selector};
+    } ) if defined $stash->{selector} && length $stash->{selector};
 
     $stash->{data} = JSON::XS->new->pretty->canonical->utf8->encode(
       $stash->{data} );
