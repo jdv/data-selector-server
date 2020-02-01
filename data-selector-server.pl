@@ -323,3 +323,4 @@ sub dispatch_request {
 }
 
 Data::Selector::Server->run_if_script;
+
